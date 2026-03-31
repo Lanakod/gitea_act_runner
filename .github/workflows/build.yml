@@ -50,12 +50,9 @@ jobs:
           sed -i "s/ACT_RUNNER_VERSION=.*/ACT_RUNNER_VERSION=${{ needs.check-release.outputs.latest }}/" Dockerfile
 
       - name: Commit updated Dockerfile
-        env:
-          TOKEN: ${{ secrets.GH_PUSH_TOKEN }}
         run: |
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
-          git remote set-url origin https://lanakod:${TOKEN}@github.com/lanakod/gitea_act_runner.git
           git add Dockerfile
           git commit -m "Update act_runner to version ${{ needs.check-release.outputs.latest }}" || echo "No changes to commit"
           git push
@@ -78,3 +75,10 @@ jobs:
           body: "Automated release for act_runner version ${{ needs.check-release.outputs.latest }}"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Push image to GHCR
+        run: |
+          VERSION=${{ needs.check-release.outputs.latest }}
+
+          docker push ghcr.io/lanakod/gitea_act_runner:$VERSION
+          docker push ghcr.io/lanakod/gitea_act_runner:latest
