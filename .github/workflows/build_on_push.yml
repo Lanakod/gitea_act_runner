@@ -19,7 +19,7 @@ jobs:
       - name: Read version from Dockerfile
         id: version
         run: |
-          VERSION=$(grep ACT_RUNNER_VERSION Dockerfile | cut -d= -f2)
+          VERSION=$(grep '^ARG ACT_RUNNER_VERSION=' Dockerfile | cut -d= -f2)
           echo "version=$VERSION" >> $GITHUB_OUTPUT
 
       - name: Build image
