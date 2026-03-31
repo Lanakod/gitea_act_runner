@@ -1,7 +1,7 @@
 [English](/README.md) | [Русский](/README.ru_RU.md)
 
 ![GitHub Release](https://img.shields.io/github/v/release/lanakod/gitea_act_runner)
-![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/lanakod/gitea_act_runner/build_on_release.yml)
+![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/lanakod/gitea_act_runner/build.yml)
 ![GitHub Downloads (all assets, all releases)](https://img.shields.io/github/downloads/lanakod/gitea_act_runner/total)
 
 # 🏃‍♂️ Custom Gitea Act Runner (Auto‑Updating Docker Image)
