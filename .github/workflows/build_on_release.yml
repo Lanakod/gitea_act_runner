@@ -18,7 +18,8 @@ jobs:
       - name: Extract version from release tag
         id: version
         run: |
-          VERSION="${GITHUB_REF#refs/tags/}"
+          RAW="${GITHUB_REF#refs/tags/}"
+          VERSION="${RAW#v}"   # remove leading v if present
           echo "version=$VERSION" >> $GITHUB_OUTPUT
 
       - name: Build image
