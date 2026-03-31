@@ -1,20 +1,22 @@
+[English](/README.md) | [Русский](/README.ru_RU.md)
+
 # 🏃‍♂️ Custom Gitea Act Runner (Auto‑Updating Docker Image)
 
-Этот репозиторий содержит кастомный Docker‑образ для **Gitea Act Runner**, который:
+This repository contains a custom Docker image for **Gitea Act Runner** that:
 
-- автоматически генерирует `config.yaml`, если он отсутствует
-- автоматически регистрирует раннер в Gitea
-- автоматически обновляется при выходе новых релизов `gitea/act_runner`
-- публикует образы в **GitHub Container Registry (GHCR)**
-- запускает раннер в режиме `daemon`
+- automatically generates `config.yaml` if it does not exist
+- automatically registers the runner with your Gitea instance
+- automatically updates when new `gitea/act_runner` releases are published
+- publishes built images to **GitHub Container Registry (GHCR)**
+- runs the runner in `daemon` mode
 
-Образ предназначен для удобного развёртывания self‑hosted раннеров Gitea Actions.
+This image is designed for easy deployment of self‑hosted Gitea Actions runners.
 
 ---
 
 ## 📦 Docker Image
 
-GHCR:
+Available on GHCR:
 
 ```
 ghcr.io/lanakod/gitea_act_runner:latest
@@ -23,7 +25,7 @@ ghcr.io/lanakod/gitea_act_runner:<version>
 
 ---
 
-## 🚀 Быстрый старт
+## 🚀 Quick Start
 
 ```bash
 docker run -d \
@@ -38,26 +40,26 @@ docker run -d \
 
 ---
 
-## ⚙️ Переменные окружения
+## ⚙️ Environment Variables
 
-| Переменная | Описание | Обязательно |
-|-----------|----------|-------------|
-| `GITEA_INSTANCE_URL` | URL вашего Gitea сервера | ✔ |
-| `GITEA_RUNNER_REGISTRATION_TOKEN` | Токен регистрации раннера | ✔ |
-| `GITEA_RUNNER_LABELS` | Лейблы раннера | ✔ |
-| `GITEA_RUNNER_NAME` | Имя раннера | ✔ |
+| Variable                          | Description                   | Required |
+|-----------------------------------|-------------------------------|----------|
+| `GITEA_INSTANCE_URL`              | URL of your Gitea instance    | ✔        |
+| `GITEA_RUNNER_REGISTRATION_TOKEN` | Runner registration token     | ✔        |
+| `GITEA_RUNNER_LABELS`             | Labels assigned to the runner | ✔        |
+| `GITEA_RUNNER_NAME`               | Name of the runner            | ✔        |
 
 ---
 
-## 📁 Директория `/data`
+## 📁 `/data` Directory
 
-Контейнер использует `/data` для хранения:
+The container uses `/data` to store:
 
-- `config.yaml` — конфигурация раннера
-- `.runner` — файл регистрации
-- кеша и временных файлов
+- `config.yaml` — runner configuration
+- `.runner` — registration metadata
+- cache and temporary files
 
-Рекомендуется монтировать volume:
+It is recommended to mount it as a volume:
 
 ```bash
 -v /srv/gitea-runner:/data
@@ -65,9 +67,9 @@ docker run -d \
 
 ---
 
-## 🛠 Автоматическая генерация config.yaml
+## 🛠 Automatic `config.yaml` Generation
 
-Если `config.yaml` отсутствует, контейнер создаёт его автоматически:
+If `config.yaml` is missing, the container automatically generates it:
 
 ```bash
 act_runner generate-config > /data/config.yaml
@@ -75,9 +77,9 @@ act_runner generate-config > /data/config.yaml
 
 ---
 
-## 🔧 Автоматическая регистрация раннера
+## 🔧 Automatic Runner Registration
 
-Если файл `/data/.runner` отсутствует, выполняется:
+If `/data/.runner` does not exist, the container performs:
 
 ```bash
 act_runner register \
@@ -88,11 +90,11 @@ act_runner register \
   --name $GITEA_RUNNER_NAME
 ```
 
-После регистрации создаётся `.runner`, и повторная регистрация не выполняется.
+After successful registration, `.runner` is created and registration will not repeat.
 
 ---
 
-## ▶️ Запуск раннера
+## ▶️ Starting the Runner
 
 ```bash
 act_runner daemon --config /data/config.yaml
@@ -100,7 +102,7 @@ act_runner daemon --config /data/config.yaml
 
 ---
 
-## 🧪 Пример docker-compose.yml
+## 🧪 Example `docker-compose.yml`
 
 ```yaml
 services:
@@ -119,11 +121,11 @@ services:
 
 ---
 
-# 🤖 Автоматическое обновление и публикация в GHCR
+# 🤖 Automatic Updates & GHCR Publishing
 
-Этот репозиторий содержит workflow, который:
+This repository includes a workflow that:
 
-- раз в сутки проверяет новые релизы `gitea/act_runner`
-- обновляет версию в Dockerfile
-- собирает Docker‑образ
-- публикует его в GHCR
+- checks for new `gitea/act_runner` releases daily
+- updates the version in the Dockerfile
+- builds the Docker image
+- publishes it to GHCR

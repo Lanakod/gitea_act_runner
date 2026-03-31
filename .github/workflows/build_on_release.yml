@@ -1,0 +1,39 @@
+name: Build & Push on Release
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    environment: build
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Log in to GHCR
+        run: echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io -u lanakod --password-stdin
+
+      - name: Extract version from release tag
+        id: version
+        run: |
+          VERSION="${GITHUB_REF#refs/tags/}"
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Build image
+        run: |
+          VERSION=${{ steps.version.outputs.version }}
+
+          docker build \
+            --build-arg ACT_RUNNER_VERSION=$VERSION \
+            -t ghcr.io/lanakod/gitea_act_runner:$VERSION \
+            -t ghcr.io/lanakod/gitea_act_runner:latest \
+            .
+
+      - name: Push image to GHCR
+        run: |
+          VERSION=${{ steps.version.outputs.version }}
+
+          docker push ghcr.io/lanakod/gitea_act_runner:$VERSION
+          docker push ghcr.io/lanakod/gitea_act_runner:latest
