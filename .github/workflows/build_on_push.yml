@@ -1,0 +1,40 @@
+name: Build & Push on Repository Push
+
+on:
+  push:
+    branches:
+      - master
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Log in to GHCR
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+
+      - name: Read version from Dockerfile
+        id: version
+        run: |
+          VERSION=$(grep ACT_RUNNER_VERSION Dockerfile | cut -d= -f2)
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Build image
+        run: |
+          VERSION=${{ steps.version.outputs.version }}
+
+          docker build \
+            --build-arg ACT_RUNNER_VERSION=$VERSION \
+            -t ghcr.io/lanakod/gitea_act_runner:$VERSION \
+            -t ghcr.io/lanakod/gitea_act_runner:latest \
+            .
+
+      - name: Push image to GHCR
+        run: |
+          VERSION=${{ steps.version.outputs.version }}
+
+          docker push ghcr.io/lanakod/gitea_act_runner:$VERSION
+          docker push ghcr.io/lanakod/gitea_act_runner:latest
