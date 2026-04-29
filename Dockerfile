@@ -9,7 +9,7 @@ LABEL org.opencontainers.image.licenses="MIT"
 
 SHELL ["/bin/bash", "-c"]
 
-ARG ACT_RUNNER_VERSION=0.5.0
+ARG ACT_RUNNER_VERSION=0.6.0
 
 RUN wget https://dl.gitea.com/act_runner/${ACT_RUNNER_VERSION}/act_runner-${ACT_RUNNER_VERSION}-linux-amd64 \
     -O /usr/local/bin/act_runner && \
